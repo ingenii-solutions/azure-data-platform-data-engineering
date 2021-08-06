@@ -1,7 +1,7 @@
 {
     "name": "testsftp",
+    "connection": "sftp",
     "config": {
-        "connection": "sftp",
         "authentication": "basic",
         "self_hosted_integration_runtime": true,
         "url": "20.90.155.110",

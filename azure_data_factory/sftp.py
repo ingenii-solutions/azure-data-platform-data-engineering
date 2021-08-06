@@ -1,15 +1,9 @@
-default_policy = {
-    "timeout": "0.00:01:00",
-    "retry": 3,
-    "retryIntervalInSeconds": 30,
-    "secureOutput": False,
-    "secureInput": False
-}
+from base import default_policy, DataFactoryPipeline
 
 
 def list_sftp_files(host_url, username, key_vault_secret_name, folder_path):
     return {
-        "name": f"List files at {host_url}/{folder_path}".replace("https://", "").replace("http://", "").replace("/", "-"),
+        "name": f"List files at {folder_path}".replace("/", "-"),
         "type": "GetMetadata",
         "dependsOn": [],
         "policy": default_policy,
@@ -42,7 +36,7 @@ def list_sftp_files(host_url, username, key_vault_secret_name, folder_path):
 
 def get_data_lake_files(container, path):
     return {
-        "name": f"List current {container}/{path} files".replace("/", "-"),
+        "name": f"List {container}/{path} files".replace("/", "-"),
         "type": "GetMetadata",
         "dependsOn": [],
         "policy": default_policy,
@@ -189,27 +183,40 @@ def move_new_files(source_activity: dict, raw_list_activity: dict, archive_list_
         }
     }
 
+def generate_sftp_pipeline(data_provider, config, table):
+    
+    data_lake_path = data_provider + "/" + table["name"]
+    pipeline = DataFactoryPipeline(data_lake_path.replace("/", "-"))
 
-class DataFactoryPipeline:
-    def __init__(self, name):
-        self.pipeline_json = {
-            "name": name,
-            "properties": {
-                "activities": [],
-                "parameters": {},
-                "variables": {},
-                "annotations": []
-            }
-        }
+    # --
 
-    def add_activity(self, activity_json, depends_on=[]):
-        activity_json["dependsOn"] = [
-            {
-                "activity": activity["name"],
-                "dependencyConditions": [
-                    "Succeeded"
-                ]
-            }
-            for activity in depends_on
-        ]
-        self.pipeline_json["properties"]["activities"].append(activity_json)
+    get_sftp_files = list_sftp_files(config["url"], config["username"],
+                                    config["key_vault_secret_name"], table["path"])
+    pipeline.add_activity(get_sftp_files)
+    
+    # --
+
+    find_all_raw_files = get_data_lake_files("raw", data_lake_path)
+    find_all_archive_files = get_data_lake_files("archive", data_lake_path)
+
+    pipeline.add_activity(find_all_raw_files)
+    pipeline.add_activity(find_all_archive_files)
+
+    # --
+
+    find_raw_files = filter_for_files(find_all_raw_files)
+    find_archive_files = filter_for_files(find_all_archive_files)
+
+    pipeline.add_activity(find_raw_files, depends_on=[find_all_raw_files])
+    pipeline.add_activity(find_archive_files, depends_on=[find_all_archive_files])
+
+    # --
+
+    move_files = move_new_files(get_sftp_files, find_raw_files, find_archive_files,
+                                config["url"], config["username"],
+                                config["key_vault_secret_name"], table["path"],
+                                data_lake_path)
+    
+    pipeline.add_activity(move_files, depends_on=[get_sftp_files, find_raw_files, find_archive_files])
+
+    return pipeline

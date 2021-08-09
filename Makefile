@@ -7,10 +7,10 @@ test setup qa
 
 # Package
 
-build-package:
-	python setup.py bdist_wheel
+setup:
+	@cp .pypirc-dist .pypirc
 
-clean-all:
+clean:
 	make clean-lint
 	make clean-package
 	make clean-tests
@@ -45,3 +45,15 @@ test:
 qa:
 	make lint
 	make test
+
+build:
+	python setup.py sdist bdist_wheel
+
+check:
+	twine check dist/*
+
+upload:
+	twine upload --config-file .pypirc dist/*
+
+upload-test:
+	twine upload --repository testpypi --config-file .pypirc dist/*

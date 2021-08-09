@@ -39,12 +39,24 @@ class PreProcess:
         with open(self.get_file_path(), "r") as jsonfile:
             return json.load(jsonfile)
 
+    @staticmethod
+    def find_all_fields(json_list):
+        all_fields_dict = {}
+        for ind_json in json_list:
+            all_fields_dict = {
+                **all_fields_dict,
+                **ind_json
+            }
+        return list(all_fields_dict.keys())
+
     def write_json_to_csv(self, new_file_name, json_to_write,
                           write_header=True, **kwargs):
         with open(new_file_name, "w") as result:
 
-            fieldnames = list(json_to_write[0].keys())
-            writer = csv.DictWriter(result, fieldnames=fieldnames, **kwargs)
+            writer = csv.DictWriter(
+                result,
+                fieldnames=self.find_all_fields(json_to_write),
+                **kwargs)
 
             if write_header:
                 writer.writeheader()

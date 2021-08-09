@@ -123,17 +123,26 @@ def get_all_sources(root_path: str) -> dict:
     dict
         Dictionary of the source and table definitions
     """
-    return {
-        s["name"]: {
-            **s,
-            "tables": {
-                t["name"]: {**t, "file_name": s_yml}
-                for t in s["tables"]
-            }
-        }
-        for s_yml in find_source_ymls(root_path)
-        for s in read_yml(s_yml).get("sources", [])
-    }
+    all_sources = {}
+    for s_yml in find_source_ymls(root_path):
+        for s in read_yml(s_yml).get("sources", []):
+            if s["name"] not in all_sources:
+                all_sources[s["name"]] = {
+                    **s,
+                    "tables": {
+                        t["name"]: {**t, "file_name": s_yml}
+                        for t in s["tables"]
+                    }
+                }
+            else:
+                all_sources[s["name"]]["tables"] = {
+                    **all_sources[s["name"]]["tables"],
+                    **{
+                        t["name"]: {**t, "file_name": s_yml}
+                        for t in s["tables"]
+                    }
+                }
+    return all_sources
 
 
 def get_source(root_path: str, source_name: str) -> dict:

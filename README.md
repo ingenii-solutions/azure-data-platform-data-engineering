@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.1.0
+* Current Version: 0.1.2
 
 ## Overview
 
@@ -85,3 +85,5 @@ See details of working with pre-processing functions in the [pre-processing READ
 ## Version History
 
 - `0.1.0`: dbt schema validation, pre-processing class
+- `0.1.1`: Minor bug fixes
+- `0.1.2`: Rearrangement and better split of work with the Databricks Runtime. Better validation

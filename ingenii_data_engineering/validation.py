@@ -1,6 +1,6 @@
 from typing import List
 
-from .schema_utils import handle_name, MergeType
+from .schema_utils import handle_name, handle_major_name, MergeType
 
 
 class SchemaException(Exception):
@@ -22,19 +22,20 @@ def check_source_schema(source_dict: dict) -> List[str]:
         If there are any issues, raise an exception
     """
     errors = []
-    if source_dict["schema"] != handle_name(source_dict["schema"]):
+
+    if source_dict["schema"] != handle_major_name(source_dict["schema"]):
         errors.append(
             f"Source {source_dict['name']}: "
             f"Schema named '{source_dict['schema']}' is not possible in "
-            f"Databricks. Suggested name: {handle_name(source_dict['schema'])}"
+            f"Databricks. Suggested name: {handle_major_name(source_dict['schema'])}"
             )
 
     for _, table in source_dict.get("tables", {}).items():
-        if table["name"] != handle_name(table["name"]):
+        if table["name"] != handle_major_name(table["name"]):
             errors.append(
                 f"Source {source_dict['name']}: "
                 f"Table named '{table['name']}' is not possible in "
-                f"Databricks. Suggested name: {handle_name(table['name'])}"
+                f"Databricks. Suggested name: {handle_major_name(table['name'])}"
                 )
 
         # Check that the join type is understood
@@ -91,30 +92,6 @@ def check_source_schema(source_dict: dict) -> List[str]:
                 )
                 suggested_name = \
                     suggested_name.replace("[", "").replace("]", "")
-
-            # - causes the SQL to create the columns to have issues
-            if "-" in column["name"] and not has_backticks:
-                sub_errors.append(
-                    f"Source {source_dict['name']}, table {table['name']}: "
-                    f"Column named '{column['name']}' has '-' "
-                    f"characters, which causes issues with defining table "
-                    f"columns in Databricks. Remove those, or add quotes and "
-                    f"backticks to the column name in the schema yml file to "
-                    f"resolve this."
-                )
-                suggested_name = suggested_name.replace("-", "_")
-
-            # / causes the SQL to create the columns to have issues
-            if "/" in column["name"] and not has_backticks:
-                sub_errors.append(
-                    f"Source {source_dict['name']}, table {table['name']}: "
-                    f"Column named '{column['name']}' has '/' "
-                    f"characters, which causes issues with defining table "
-                    f"columns in Databricks. Remove those, or add quotes and "
-                    f"backticks to the column name in the schema yml file to "
-                    f"resolve this."
-                )
-                suggested_name = suggested_name.replace("/", "_or_")
 
             # Columns starting with _ are reserved for engineering columns
             if column["name"].startswith("_") \

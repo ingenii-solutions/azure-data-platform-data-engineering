@@ -63,3 +63,8 @@ class PreProcess:
 
             for entry in json_to_write:
                 writer.writerow(entry)
+  
+    def write_json(self, new_file_name, json_to_write, **kwargs):
+        with open(new_file_name, "w") as result:
+            for ind_json in json_to_write:
+                json.dump(ind_json, result, **kwargs)

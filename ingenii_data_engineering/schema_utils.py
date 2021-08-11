@@ -18,6 +18,24 @@ def handle_name(raw_name: str) -> str:
                    .replace("\n", "").replace("\t", "_").replace("=", "-")
 
 
+def handle_major_name(raw_name: str) -> str:
+    """
+    More restrictions for 'major' names, such as schema and table names.
+    Column names are more permissive
+
+    Parameters
+    ----------
+    raw_name : str
+        The raw name containing potentially illegal characters
+
+    Returns
+    -------
+    str
+        The new name, cleaned of any problem containers
+    """
+    return handle_name(raw_name).replace("-", "_")
+
+
 def schema_as_string(schema_list: list) -> str:
     """
     Takes a dictionary object of a schema, and turns it into string form to be

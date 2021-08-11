@@ -1,6 +1,8 @@
 import csv
-from os.path import exists
 import json
+from os import mkdir, path
+from shutil import move
+
 
 
 class PreProcess:
@@ -12,31 +14,52 @@ class PreProcess:
 
         self.development = development
 
-        if not exists(self.get_file_path()):
+        if not path.exists(self.get_file_path()):
             raise Exception(
                 f"Unable to find file at {self.get_file_path()}!"
             )
+        
+        if development:
+            # Will move to a folder in the same location the file is in now
+            self.write_folder = "/".join(self.file_name.split("/")[:-1]) or "."
+            self.archive_folder = self.write_folder + "/before_pre_process"
 
-    def get_file_path(self):
-        if self.development:
-            return self.file_name
-        return "/" + "/".join(["dbfs", "mnt", "raw",
-                               self.data_provider, self.table, self.file_name])
+            self.file_name = self.file_name.split("/")[-1]
+        else:
+            # Move to the correct container location
+            self.write_folder = "/" + "/".join([
+                "dbfs", "mnt", "raw", self.data_provider, self.table])
+            self.archive_folder = "/" + "/".join([
+                "dbfs", "mnt", "archive", self.data_provider, self.table, "before_pre_process"])
+
+        if not path.exists(self.archive_folder):
+            mkdir(self.archive_folder)
+        move(self.write_folder + "/" + self.file_name, 
+                self.archive_folder + "/" + self.file_name)
+
+    def get_raw_path(self):
+        return self.archive_folder + "/" + self.file_name
+
+    def get_write_path(self, new_file_name=None):
+        if new_file_name:
+            return self.archive_folder + "/" + new_file_name
+        else:
+            return self.archive_folder + "/" + self.file_name
 
     def get_filename_no_extension(self):
         return ".".join(self.file_name.split(".")[:-1])
 
     def get_raw_file(self):
-        with open(self.get_file_path(), "r") as raw_file:
+        with open(self.get_raw_path(), "r") as raw_file:
             return raw_file.read()
 
     def get_raw_file_by_line(self):
-        with open(self.get_file_path(), "r") as raw_file:
+        with open(self.get_raw_path(), "r") as raw_file:
             for line in raw_file.readlines():
                 yield line
 
     def get_file_as_json(self):
-        with open(self.get_file_path(), "r") as jsonfile:
+        with open(self.get_raw_path(), "r") as jsonfile:
             return json.load(jsonfile)
 
     @staticmethod
@@ -49,9 +72,9 @@ class PreProcess:
             }
         return list(all_fields_dict.keys())
 
-    def write_json_to_csv(self, new_file_name, json_to_write,
+    def write_json_to_csv(self, json_to_write, new_file_name=None,
                           write_header=True, **kwargs):
-        with open(new_file_name, "w") as result:
+        with open(self.get_write_path(new_file_name), "w") as result:
 
             writer = csv.DictWriter(
                 result,
@@ -64,7 +87,7 @@ class PreProcess:
             for entry in json_to_write:
                 writer.writerow(entry)
   
-    def write_json(self, new_file_name, json_to_write, **kwargs):
-        with open(new_file_name, "w") as result:
+    def write_json(self, json_to_write, new_file_name=None, **kwargs):
+        with open(self.get_write_path(new_file_name), "w") as result:
             for ind_json in json_to_write:
                 json.dump(ind_json, result, **kwargs)

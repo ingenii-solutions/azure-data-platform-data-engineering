@@ -1,8 +1,7 @@
 import csv
 import json
-from os import mkdir, path
+from os import makedirs, path
 from shutil import move
-
 
 
 class PreProcess:
@@ -14,11 +13,6 @@ class PreProcess:
 
         self.development = development
 
-        if not path.exists(self.get_file_path()):
-            raise Exception(
-                f"Unable to find file at {self.get_file_path()}!"
-            )
-        
         if development:
             # Will move to a folder in the same location the file is in now
             self.write_folder = "/".join(self.file_name.split("/")[:-1]) or "."
@@ -33,18 +27,25 @@ class PreProcess:
                 "dbfs", "mnt", "archive", self.data_provider, self.table, "before_pre_process"])
 
         if not path.exists(self.archive_folder):
-            mkdir(self.archive_folder)
-        move(self.write_folder + "/" + self.file_name, 
-                self.archive_folder + "/" + self.file_name)
+            makedirs(self.archive_folder)
+        
+        if not path.exists(self.get_write_path()) and not path.exists(self.get_raw_path()):
+            raise Exception(
+                f"Unable to find file at {self.get_write_path()} or {self.get_raw_path()} to process!"
+            )
+
+        if not path.exists(self.get_raw_path()):
+            move(self.get_write_path(), self.get_raw_path())
+        
 
     def get_raw_path(self):
         return self.archive_folder + "/" + self.file_name
 
     def get_write_path(self, new_file_name=None):
         if new_file_name:
-            return self.archive_folder + "/" + new_file_name
+            return self.write_folder + "/" + new_file_name
         else:
-            return self.archive_folder + "/" + self.file_name
+            return self.write_folder + "/" + self.file_name
 
     def get_filename_no_extension(self):
         return ".".join(self.file_name.split(".")[:-1])

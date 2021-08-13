@@ -1,12 +1,12 @@
 # Ingenii Data Engineering Package
 
 [![Maintainer](https://img.shields.io/badge/maintainer%20-ingenii-orange?style=flat)](https://ingenii.dev/)
-[![License](https://img.shields.io/badge/license%20-MPL2.0-orange?style=flat)](https://github.com/ingenii-solutions/terraform-azurerm-key-vault/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license%20-MPL2.0-orange?style=flat)](https://github.com/ingenii-solutions/azure-data-platform-data-engineering/blob/main/LICENSE)
 [![Contributing](https://img.shields.io/badge/howto%20-contribute-blue?style=flat)](https://github.com/ingenii-solutions/data-platform-databricks-runtime/blob/main/CONTRIBUTING.md)
 
 ## Details
 
-* Current Version: 0.1.2
+* Current Version: 0.1.3
 
 ## Overview
 
@@ -87,3 +87,4 @@ See details of working with pre-processing functions in the [pre-processing READ
 - `0.1.0`: dbt schema validation, pre-processing class
 - `0.1.1`: Minor bug fixes
 - `0.1.2`: Rearrangement and better split of work with the Databricks Runtime. Better validation
+- `0.1.3`: Adding pre-processing utilities

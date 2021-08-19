@@ -92,3 +92,4 @@ class PreProcess:
         with open(self.get_write_path(new_file_name), "w") as result:
             for ind_json in json_to_write:
                 json.dump(ind_json, result, **kwargs)
+                result.write("\n")

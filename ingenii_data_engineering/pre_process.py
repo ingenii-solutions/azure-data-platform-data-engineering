@@ -3,6 +3,9 @@ import json
 from os import makedirs, path
 from shutil import move
 
+from .dbt_schema import get_all_sources
+
+all_sources = get_all_sources("/".join(["", "dbfs", "mnt", "dbt"]))
 
 class PreProcess:
     def __init__(self, data_provider: str, table: str, file_name: str,
@@ -10,6 +13,8 @@ class PreProcess:
         self.data_provider = data_provider
         self.table = table
         self.file_name = file_name
+
+        self.table_details = all_sources[data_provider]["tables"][table]
 
         self.development = development
 
@@ -63,15 +68,22 @@ class PreProcess:
         with open(self.get_raw_path(), "r") as jsonfile:
             return json.load(jsonfile)
 
-    @staticmethod
-    def find_all_fields(json_list):
-        all_fields_dict = {}
+    def get_table_fields(self, json_list):
+        known_columns = set()
         for ind_json in json_list:
-            all_fields_dict = {
-                **all_fields_dict,
-                **ind_json
-            }
-        return list(all_fields_dict.keys())
+            known_columns.update(ind_json.keys())
+
+        schema_column_names = \
+            [c["name"].strip("`") for c in self.table_details["columns"]]
+        missing_fields = [f for f in known_columns 
+                          if f not in schema_column_names]
+        if missing_fields:
+            raise Exception(
+                f"Columns in file not in schema! {missing_fields}. "
+                f"Schema columns: {schema_column_names}, "
+                f"file columns: {known_columns}")
+
+        return schema_column_names
 
     def write_json_to_csv(self, json_to_write, new_file_name=None,
                           write_header=True, **kwargs):
@@ -79,7 +91,7 @@ class PreProcess:
 
             writer = csv.DictWriter(
                 result,
-                fieldnames=self.find_all_fields(json_to_write),
+                fieldnames=self.get_table_fields(json_to_write),
                 **kwargs)
 
             if write_header:

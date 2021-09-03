@@ -16,6 +16,9 @@ class PreProcess:
 
         self.table_details = all_sources[data_provider]["tables"][table]
 
+        # In case the column names vary by case, this aligns with the schema
+        self.column_name_map = {}
+
         self.development = development
 
         if development:
@@ -75,13 +78,24 @@ class PreProcess:
 
         schema_column_names = \
             [c["name"].strip("`") for c in self.table_details["columns"]]
-        missing_fields = [f for f in known_columns 
-                          if f not in schema_column_names]
-        if missing_fields:
+        schema_column_map = {
+            c.lower(): c for c in schema_column_names
+        }
+        missing_columns = [
+            f for f in known_columns 
+            if f not in schema_column_names and f.lower() not in schema_column_map
+        ]
+        if missing_columns:
             raise Exception(
-                f"Columns in file not in schema! {missing_fields}. "
+                f"Columns in file not in schema! {missing_columns}. "
                 f"Schema columns: {schema_column_names}, "
                 f"file columns: {known_columns}")
+
+        self.column_name_map = {
+            f: schema_column_map[f.lower()]
+            for f in known_columns 
+            if f != schema_column_map[f.lower()]
+        }
 
         return schema_column_names
 
@@ -98,7 +112,10 @@ class PreProcess:
                 writer.writeheader()
 
             for entry in json_to_write:
-                writer.writerow(entry)
+                writer.writerow({
+                    self.column_name_map.get(k, k): v
+                    for k, v in entry.items()
+                })
   
     def write_json(self, json_to_write, new_file_name=None, **kwargs):
         with open(self.get_write_path(new_file_name), "w") as result:

@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.1.4
+* Current Version: 0.1.5
 
 ## Overview
 
@@ -88,3 +88,5 @@ See details of working with pre-processing functions in the [pre-processing READ
 - `0.1.1`: Minor bug fixes
 - `0.1.2`: Rearrangement and better split of work with the Databricks Runtime. Better validation
 - `0.1.3`: Adding pre-processing utilities
+- `0.1.4`: Handle JSON files
+- `0.1.5`: Better functionality for column names in .csv files

@@ -52,8 +52,8 @@ build:
 check:
 	twine check dist/*
 
-upload:
+upload: check
 	twine upload --config-file .pypirc dist/*
 
-upload-test:
+upload-test: check
 	twine upload --repository testpypi --config-file .pypirc dist/*

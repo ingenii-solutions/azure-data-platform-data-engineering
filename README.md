@@ -39,9 +39,6 @@ See details of working with pre-processing functions in the [pre-processing READ
 
 1. Complete the 'Getting Started > Prerequisites' section
 1. For Windows only:
-    1. Go to [ezwinports](https://sourceforge.net/projects/ezwinports/files/) - this is required to be able to run `make` commands
-    1. Download make-4.2.1-without-guile-w32-bin.zip (get the version without guile)
-    1. Extract zip and Copy the contents to C:\ProgramFiles\Git\mingw64\ merging the folders, but do NOT overwrite/replace any exisiting files.
 1. Run `make setup`: to copy the .env into place (`.env-dist` > `.env`)
 
 ## Getting started
@@ -84,9 +81,10 @@ See details of working with pre-processing functions in the [pre-processing READ
 
 ## Version History
 
-- `0.1.0`: dbt schema validation, pre-processing class
-- `0.1.1`: Minor bug fixes
-- `0.1.2`: Rearrangement and better split of work with the Databricks Runtime. Better validation
-- `0.1.3`: Adding pre-processing utilities
-- `0.1.4`: Handle JSON files
+- `0.2.0`: Pre-processing happens all in the 'archive' container
 - `0.1.5`: Better functionality for column names in .csv files
+- `0.1.4`: Handle JSON files
+- `0.1.3`: Adding pre-processing utilities
+- `0.1.2`: Rearrangement and better split of work with the Databricks Runtime. Better validation
+- `0.1.1`: Minor bug fixes
+- `0.1.0`: dbt schema validation, pre-processing class

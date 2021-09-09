@@ -29,7 +29,7 @@ class PreProcess:
 
             # Move to the correct container location
             self.write_folder = "/" + "/".join([
-                "dbfs", "mnt", "raw", self.data_provider, self.table])
+                "dbfs", "mnt", "archive", self.data_provider, self.table])
             self.archive_folder = "/" + "/".join([
                 "dbfs", "mnt", "archive", self.data_provider, self.table, "before_pre_process"])
 

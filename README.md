@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.1.5
+* Current Version: 0.2.0
 
 ## Overview
 

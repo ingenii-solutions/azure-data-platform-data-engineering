@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.2.0
+* Current Version: 0.2.1
 
 ## Overview
 
@@ -81,6 +81,7 @@ See details of working with pre-processing functions in the [pre-processing READ
 
 ## Version History
 
+- `0.2.1`: Handle JSON read UTF-8 BOM
 - `0.2.0`: Pre-processing happens all in the 'archive' container
 - `0.1.5`: Better functionality for column names in .csv files
 - `0.1.4`: Handle JSON files

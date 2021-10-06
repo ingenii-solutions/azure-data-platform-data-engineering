@@ -84,8 +84,16 @@ class PreProcess:
                 yield line
 
     def get_file_as_json(self):
-        with open(self.get_raw_path(), "r") as jsonfile:
-            return json.load(jsonfile)
+        try:
+            with open(self.get_raw_path(), "r") as jsonfile:
+                return json.load(jsonfile)
+        except json.decoder.JSONDecodeError as e:
+            if "Unexpected UTF-8 BOM" in e.msg:
+                with open(self.get_raw_path(), "rb") as jsonfile:
+                    return json.loads(
+                        jsonfile.read().strip(), encoding="utf-8-sig")
+            else:
+                raise e
 
     def read_csv_as_json(self):
         with open(self.get_raw_path(), "r") as raw_file:
@@ -122,7 +130,6 @@ class PreProcess:
             for f in file_fields 
             if f != schema_column_map[f.lower()]
         }
-
 
     def write_json_to_csv(self, json_to_write, new_file_name=None,
                           write_header=True, **kwargs):

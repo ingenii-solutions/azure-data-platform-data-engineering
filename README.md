@@ -22,11 +22,12 @@ import ingenii_data_engineering
 
 ## dbt
 
-See details of how we validate dbt schemas in the [dbt README file](DBT.md)
+Part of this package validates dbt schemas to ensure they are compatible with Databricks and the larger Ingenii Data Platform. This happens when a data pipeline to ingest a file is run, to make sure a file is ingested correctly.
+Full details of how to set up your dbt schema files in your Data Engineering repository can be found in the [Ingenii Data Engineering Example repository](https://github.com/ingenii-solutions/azure-data-platform-data-engineering-example).
 
 ## Pre-processing
 
-See details of working with pre-processing functions in the [pre-processing README file](PREPROCESS.md)
+This package also contains code to facilitate the pre-processing of files before they are ingested by the data platform. This allows users to transform any data into a form that is compatible. See details of working with pre-processing functions in the [Ingenii Data Engineering Example repository](https://github.com/ingenii-solutions/azure-data-platform-data-engineering-example) 
 
 ## Development
 

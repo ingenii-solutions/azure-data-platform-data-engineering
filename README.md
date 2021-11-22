@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.2.2
+* Current Version: 0.3.0
 
 ## Overview
 
@@ -89,6 +89,7 @@ will generate a `.whl` file in a folder called `dist/`. For more details, see th
 
 ## Version History
 
+- `0.3.0`: Create pre-processing package using the module
 - `0.2.1`: Handle JSON read UTF-8 BOM
 - `0.2.0`: Pre-processing happens all in the 'archive' container
 - `0.1.5`: Better functionality for column names in .csv files

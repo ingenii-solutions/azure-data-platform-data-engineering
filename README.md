@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.2.1
+* Current Version: 0.2.2
 
 ## Overview
 
@@ -27,7 +27,14 @@ Full details of how to set up your dbt schema files in your Data Engineering rep
 
 ## Pre-processing
 
-This package also contains code to facilitate the pre-processing of files before they are ingested by the data platform. This allows users to transform any data into a form that is compatible. See details of working with pre-processing functions in the [Ingenii Data Engineering Example repository](https://github.com/ingenii-solutions/azure-data-platform-data-engineering-example) 
+This package contains code to facilitate the pre-processing of files before they are ingested by the data platform. This allows users to transform any data into a form that is compatible. See details of working with pre-processing functions in the [Ingenii Data Engineering Example repository](https://github.com/ingenii-solutions/azure-data-platform-data-engineering-example).
+
+This package also contains the code to turn the pre-processing scripts into a package, ready to be uploaded and used by the Data Platform. Once this package is installed, the command
+```bash
+python -m <package name> <command> <folder with pre-processing code>
+python -m ingenii_data_engineering pre_processing_package pre_process
+```
+will generate a `.whl` file in a folder called `dist/`. For more details, see the [Ingenii Data Engineering Example repository](https://github.com/ingenii-solutions/azure-data-platform-data-engineering-example).
 
 ## Development
 

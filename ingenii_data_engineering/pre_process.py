@@ -56,14 +56,14 @@ class PreProcess:
             self.file_name = self.file_name.split("/")[-1]
 
         else:
-            self.project_root = "/".join(["", "dbfs", "mnt", "dbt"])
+            mnt_path = "/dbfs/mnt/"
+
+            self.project_root = mnt_path + "dbt"
 
             # Move to the correct container location
-            self.write_folder = "/" + "/".join([
-                "dbfs", "mnt", "archive", self.data_provider, self.table])
-            self.archive_folder = "/" + "/".join([
-                "dbfs", "mnt", "archive", self.data_provider, self.table, 
-                "before_pre_process"])
+            self.write_folder = \
+                mnt_path + f"archive/{self.data_provider}/{self.table}"
+            self.archive_folder = self.write_folder + "/before_pre_process"
 
         all_sources = get_all_sources(self.project_root)
         self.table_details = all_sources[data_provider]["tables"][table]

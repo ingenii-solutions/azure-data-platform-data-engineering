@@ -186,7 +186,7 @@ class PreProcess:
             if "Unexpected UTF-8 BOM" in decode_error.msg:
                 with open(self.get_raw_path(), "rb") as jsonfile:
                     return json.loads(
-                        jsonfile.read().strip(), encoding="utf-8-sig")
+                        jsonfile.read().decode("utf-8-sig").strip())
             else:
                 raise decode_error
 

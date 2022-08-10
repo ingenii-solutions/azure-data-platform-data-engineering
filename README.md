@@ -6,7 +6,7 @@
 
 ## Details
 
-* Current Version: 0.3.1
+* Current Version: 0.3.2
 
 ## Overview
 
@@ -89,6 +89,7 @@ will generate a `.whl` file in a folder called `dist/`. For more details, see th
 
 ## Version History
 
+- `0.3.2`: Further bugfix for JSON UTF-8 BOM
 - `0.3.1`: Remove unnecessary functions specific to Databricks
 - `0.3.0`: Create pre-processing package using the module
 - `0.2.1`: Handle JSON read UTF-8 BOM

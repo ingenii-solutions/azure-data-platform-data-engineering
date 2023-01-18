@@ -294,9 +294,8 @@ class PreProcess:
         write_header : bool, optional
             Whether headers should be written to the file, by default True
         """
-        field_names = self.get_expected_table_fields()
-        self.check_table_fields(
-            self.get_json_list_fields(json_to_write), field_names)
+        field_names = self.get_json_list_fields(json_to_write)
+        self.check_table_fields(field_names)
         with open(self.get_write_path(new_file_name), "w") as result:
 
             writer = csv.DictWriter(result, fieldnames=field_names, 

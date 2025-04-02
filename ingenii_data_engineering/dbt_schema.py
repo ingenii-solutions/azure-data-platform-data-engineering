@@ -102,7 +102,10 @@ def find_source_ymls(root_path: str) -> list:
 
     return [
         path.join(dirpath, f)
-        for source_path in project_config.get("source-paths", [])
+        for source_path in project_config.get(
+            "model-paths",  # New name in later dbt versions
+            project_config.get("source-paths", [])
+        )
         for (dirpath, _, file_names) in walk(path.join(root_path, source_path))
         for f in file_names
         if f.endswith(".yml") or f.endswith(".yaml")
